@@ -1,12 +1,20 @@
 # FAQ
 
+## Q. Why use `passable` instead of other password store managers, such as 1Password, LastPass, Bitwarden, etc.?
+
+A. Because `passable` is free open source, simple to prove secure, command line friendly, and can work with any other program. For some teams we do use 1Password, LastPass, Bitwarden, and other passsword store managers, and we like all of them. Yet for some of our teams and clients, we like to also use `passable` because it's so simple.
+
+## Q. Why use `passable` instead of the `pass` password store manager, which is also a GPG command line tool?
+
+A. Because `passable` is even simpler. It doesn't need any initialization, and doesn't need write access. You can use `passable` on any existing compatible GPG file. For some teams we dp use `pass`, and we like it for storing per-user passwords, such having each user do their own initiatlization to create a hidden dot directory and then write files there.
+
 ## Q. Why use `passable` instead of just GPG directly?
 
-A. Because we work with many team members with a wide range of skill levels and on a wide range of systems. We believe that `passable` is easier to understand for our top use cases, and also provides careful compatibility such as with older systems that use GPG 1 instead of GPG 2. The `passable` command calls GPG, so the inputs and output and options are all fully GPG under the covers. You can use GPG directly as you like.
+A. Because `passable` is simpler for many people to learn and use. We work with many teams, with a wide range of skill levels, and on a wide range of systems. We believe that `passable` is easier to understand for our top use cases, and provides compatibility with older systems that use GPG 1 instead of GPG 2. 
 
-## Q. Why use `passable` instead of `pass` which is also a GPG command line tool?
+## Q. Is `passable` compatible with GPG?
 
-A. Because we want a tool that doesn't need any initialization and doesn't even need write access. You can use `passable` on any existing compatible GPG file. For comparsion, we evaluated `pass` and saw that each user would need to initiatlization, and `pass` would default to create a dot directory within a user's home directory, then write files there.
+A. Yes `passable` calls GPG. The `passable` inputs, outputs, and options are all fully GPG under the covers. For example, you can freely intermix `passable` commands and GPG commands, all on the same files.
 
 ## Q. Why use many GPG options instead of a simple 'gpg -c' command?
 
