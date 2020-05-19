@@ -44,7 +44,7 @@ sudo curl -sSL "https://raw.githubusercontent.com/SixArm/passable/master/passabl
 
 ### Create a new password
 
-Create a new password:
+Command:
 
 ```sh
 passable new
@@ -55,7 +55,7 @@ Output is a new strong secure password.
 
 ### Encrypt a file
 
-Encrypt a file:
+Command:
 
 ```sh
 passable encrypt example.txt
@@ -66,7 +66,7 @@ Output is a new encrypted file `example.txt.gpg`.
 
 ### Decrypt a file
 
-Decrypt a file:
+Command:
 
 ```sh
 passable decrypt example.txt.gpg
@@ -75,13 +75,15 @@ passable decrypt example.txt.gpg
 Output is the decrypted text.
 
 
-## Examples of using the clipboard
+### Decrypt a file to the clipboard on macOS
 
-Decrypt a file to the clipboard on macOS:
+Command:
 
 ```sh
 passable decrypt example.txt.gpg | pbcopy
 ```
+
+### Decrypt a file to the clipboard on Linux
 
 Decrypt a file to the clipboard on Linux:
 
