@@ -1,0 +1,100 @@
+#!/bin/sh
+set -eu
+
+## Program Tracking ##
+
+program_command="passable"
+program_version="5.0.0"
+program_created="2010-05-20"
+program_updated="2020-05-20"
+program_license="GPL"
+program_contact="Joel Parker Henderson (joel@joelparkerhenderson.com)"
+program_variant="$program_command version $program_version updated $program_updated"
+
+## Environment variable settings
+
+PASSABLE_LENGTH_DEFAULT="24"
+PASSABLE_CHARACTERS_DEFAULT="A-Za-z0-9~@#$%^&*(){}[]<>,./?;:-=_+"
+PASSABLE_GPG_COMMAND_DEFAULT="gpg"
+PASSABLE_DECRYPT_UMASK_DEFAULT="0077"
+
+## Help Function ##
+
+help(){
+cat <<EOF
+Command: $program_command
+Version: $program_version
+Created: $program_created
+Updated: $program_updated
+License: $program_license
+Contact: $program_contact
+EOF
+}
+
+if [ "$#" -eq 0 ]; then
+    help
+    exit 0
+fi
+
+passable_new(){
+    length=${1:-${PASSABLE_LENGTH:-$PASSABLE_LENGTH_DEFAULT}}
+    characters=${2:-${PASSABLE_CHARACTERS:-$PASSABLE_CHARACTERS_DEFAULT}}
+    printf "%s\n" $(LC_ALL=C < /dev/urandom tr -dc "$characters" | head -c"$length")
+}
+
+passable_encrypt(){
+    ${PASSABLE_GPG_COMMAND:-$PASSABLE_GPG_COMMAND_DEFAULT} \
+        --symmetric \
+        --cipher-algo aes256 \
+        --digest-algo sha256 \
+        --cert-digest-algo sha256 \
+        --compress-algo none -z 0 \
+        --s2k-mode 3 \
+        --s2k-digest-algo sha512 \
+        --s2k-count 65011712 \
+        --force-mdc \
+        --quiet --no-greeting \
+        --pinentry-mode=loopback \
+        "$@"
+}
+
+passable_decrypt(){
+    umask_save=`umask`
+    umask "${PASSABLE_DECRYPT_UMASK:-$PASSABLE_DECRYPT_UMASK_DEFAULT}"
+    ${PASSABLE_GPG_COMMAND:-$PASSABLE_GPG_COMMAND_DEFAULT} \
+        --decrypt \
+        --quiet \
+        --no-greeting \
+        --pinentry-mode=loopback \
+        "$@"
+    umask "$umask_save"
+}
+
+arg1="$1"
+shift
+case "$arg1" in
+    -h|--help|help)
+        help
+        exit 0
+        ;;
+    -v|--version|version)
+        out $program_version
+        exit 0
+        ;;
+    n|new|g|generate)
+        passable_new "$@"
+        exit 0
+        ;;
+    e|encrypt)
+        passable_encrypt "$@"
+        exit 0
+        ;;
+    d|decrypt)
+        passable_decrypt "$@"
+        exit 0
+        ;;
+    *)
+        help
+        exit 0
+        ;;
+esac
