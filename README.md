@@ -92,7 +92,7 @@ Command:
 passable decrypt file.txt.gpg
 ```
 
-Output is the decrypted text, such as the password yuu saved:
+Output is the decrypted text, such as the password you saved:
 
 ```txt
 S&dw6[ysN@O9W5{5>^&RZ9pF
