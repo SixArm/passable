@@ -116,3 +116,28 @@ Note that these options impact compatibility with other GPG/PGP clients.
 
 Credit: User twr [here](https://news.ycombinator.com/item?id=13382734)
 
+
+## Naming conventions
+
+We tend to use these naming conventions:
+
+  * GPG file name extension `.gpg`.
+
+  * tar file extension `.tar`.
+
+
+## Compression
+
+We tend to skip compression:
+
+  * We tend to use `gpg` without using compression.
+
+  * We tend to use `tar` without using compression.
+
+
+## Older versions
+
+If you use GPG v1, and you want to skip the GPG user agent, then you may want to add this option:
+
+    --no-use-agent
+
