@@ -109,11 +109,11 @@ echo 'S&dw6[ysN@O9W5{5>^&RZ9pF' | pbclip
 
 ## Documentation
 
-* [more examples](doc/more_examples.md)
-* [faq](doc/faq.md)
-* [environment variables](doc/environment_variables.md)
-* [technical implementation](doc/technical_implementation.md)
-* [troubleshooting help](doc/troubleshooting_help.md)
+* [More examples](doc/more_examples.md)
+* [FAQ inclusing comparisons with other password store managers](doc/faq.md)
+* [Environment variables for customization](doc/environment_variables.md)
+* [Technical implementation including GPG options](doc/technical_implementation.md)
+* [Troubleshooting help](doc/troubleshooting_help.md)
 
 
 ## Thanks
