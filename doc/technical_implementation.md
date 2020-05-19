@@ -1,5 +1,8 @@
 # Technical implemention
 
+This tool uses the command line interface, GNU Privacy Guard (GPG), and settings that make the encryption more-compatible on many systems including older systems.
+
+
 ## Encryption settings
 
 We use these choices:

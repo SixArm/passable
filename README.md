@@ -2,6 +2,12 @@
 
 This is `passable`, a simple password store tool, also known as a password manager, a secret keeper, or a file valut.
 
+
+## Introdution
+
+
+### Purpose
+
 The purpose of this tool is to be just good enough to do three things:
 
 * Create a new password.
@@ -9,6 +15,9 @@ The purpose of this tool is to be just good enough to do three things:
 * Encrypt a file.
 
 * Decrypt a file.
+
+
+### Usage
 
 Syntax:
 
@@ -18,10 +27,8 @@ passable encrypt <file>
 passable decrypt <file>
 ```
 
-This tool uses the command line interface, GNU Privacy Guard (GPG), and settings that make the encryption more-compatible on many systems including older systems.
 
-
-## Install
+### Installation
 
 Download the program `passable` anywhere you want, and make it runnable.
 
@@ -31,10 +38,11 @@ Example on typical macOS and Linux:
 sudo curl -sSL "https://raw.githubusercontent.com/SixArm/passable/master/passable" -o /usr/local/bin/passable && chmod +x $_
 ```
 
-We welcome help creating system installation packages for various platforms.
-
 
 ## Examples
+
+
+### Create a new password
 
 Create a new password:
 
@@ -44,6 +52,9 @@ passable new
 
 Output is a new strong secure password.
 
+
+### Encrypt a file
+
 Encrypt a file:
 
 ```sh
@@ -51,6 +62,9 @@ passable encrypt example.txt
 ```
 
 Output is a new encrypted file `example.txt.gpg`.
+
+
+### Decrypt a file
 
 Decrypt a file:
 
