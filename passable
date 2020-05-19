@@ -28,6 +28,35 @@ Created: $program_created
 Updated: $program_updated
 License: $program_license
 Contact: $program_contact
+
+## Usage
+
+Syntax:
+
+    passable new
+    passable encrypt <file>
+    passable decrypt <file>
+
+## Examples
+
+Create a new password:
+
+    passable new
+
+Output is a new strong secure password.
+
+Encrypt a file:
+
+    passable encrypt example.txt
+
+Output is a new encrypted file `example.txt.gpg`.
+
+Decrypt a file:
+
+    passable decrypt example.txt.gpg
+
+Output is the decrypted text.
+
 EOF
 }
 
