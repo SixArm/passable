@@ -31,6 +31,24 @@ passable decrypt example.txt.gpg --output foo.txt
 ```
 
 
+## Decrypt a file to the clipboard on macOS
+
+Command:
+
+```sh
+passable decrypt example.txt.gpg | pbcopy
+```
+
+
+## Decrypt a file to the clipboard on Linux
+
+Decrypt a file to the clipboard on Linux:
+
+```sh
+passable decrypt example.txt.gpg | xclip
+```
+
+
 ## Encrypt a diretory
 
 Encrypt a directory:
