@@ -50,7 +50,19 @@ Command:
 passable new
 ```
 
-Output is a new strong secure password.
+Output is a new strong secure password:
+
+```sh
+S&dw6[ysN@O9W5{5>^&RZ9pF
+```
+
+You can do anything you want with the new password.
+
+For example, you can save the new password as a new file:
+
+```sh
+echo 'S&dw6[ysN@O9W5{5>^&RZ9pF' > file.txt
+```
 
 
 ### Encrypt a file
@@ -63,6 +75,14 @@ passable encrypt file.txt
 
 Output is a new encrypted file `file.txt.gpg`.
 
+You can do anything you want with the new encrypted file.
+
+For example, you can add the new encrypted file to git version control:
+
+```sh
+git add file.txt.gpg
+```
+
 
 ### Decrypt a file
 
@@ -72,7 +92,28 @@ Command:
 passable decrypt file.txt.gpg
 ```
 
-Output is the decrypted text.
+Output is the decrypted text, such as the password yuu saved:
+
+```sh
+S&dw6[ysN@O9W5{5>^&RZ9pF
+```
+
+You can do anything you want with the decrypted text.
+
+For example, you can copy the decrypted text to your clipboard on macOS:
+
+```sh
+echo 'S&dw6[ysN@O9W5{5>^&RZ9pF' | pbclip
+```
+
+
+## Documentation
+
+* [more examples](doc/more_examples.md)
+* [faq](doc/faq.md)
+* [environment variables](doc/environment_variables.md)
+* [technical implementation](doc/technical_implementation.md)
+* [troubleshooting help](doc/troubleshooting_help.md)
 
 
 ## Thanks
