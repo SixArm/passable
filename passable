@@ -47,13 +47,13 @@ Output is a new strong secure password.
 
 Encrypt a file:
 
-    passable encrypt example.txt
+    passable encrypt file.txt
 
-Output is a new encrypted file `example.txt.gpg`.
+Output is a new encrypted file `file.txt.gpg`.
 
 Decrypt a file:
 
-    passable decrypt example.txt.gpg
+    passable decrypt file.txt.gpg
 
 Output is the decrypted text.
 

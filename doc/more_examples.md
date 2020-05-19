@@ -6,13 +6,13 @@
 Encrypt a file then delete it:
 
 ```sh
-passable encrypt example.txt && rm $_
+passable encrypt file.txt && rm $_
 ```
 
 Encrypt a file to a specific output file name:
 
 ```sh
-passable encrypt example.txt --output foo.gpg
+passable encrypt file.txt --output foo.gpg
 ```
 
 
@@ -21,13 +21,13 @@ passable encrypt example.txt --output foo.gpg
 Decrypt a file then delete it:
 
 ```sh
-passable decrypt example.txt.gpg && rm $_
+passable decrypt file.txt.gpg && rm $_
 ```
 
 Decrypt a file to a specific output file name:
 
 ```sh
-passable decrypt example.txt.gpg --output foo.txt
+passable decrypt file.txt.gpg --output foo.txt
 ```
 
 
@@ -36,7 +36,7 @@ passable decrypt example.txt.gpg --output foo.txt
 Command:
 
 ```sh
-passable decrypt example.txt.gpg | pbcopy
+passable decrypt file.txt.gpg | pbcopy
 ```
 
 
@@ -45,7 +45,7 @@ passable decrypt example.txt.gpg | pbcopy
 Decrypt a file to the clipboard on Linux:
 
 ```sh
-passable decrypt example.txt.gpg | xclip
+passable decrypt file.txt.gpg | xclip
 ```
 
 

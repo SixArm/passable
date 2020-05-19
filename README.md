@@ -58,10 +58,10 @@ Output is a new strong secure password.
 Command:
 
 ```sh
-passable encrypt example.txt
+passable encrypt file.txt
 ```
 
-Output is a new encrypted file `example.txt.gpg`.
+Output is a new encrypted file `file.txt.gpg`.
 
 
 ### Decrypt a file
@@ -69,7 +69,7 @@ Output is a new encrypted file `example.txt.gpg`.
 Command:
 
 ```sh
-passable decrypt example.txt.gpg
+passable decrypt file.txt.gpg
 ```
 
 Output is the decrypted text.
