@@ -15,10 +15,9 @@ program_variant="$program_command version $program_version updated $program_upda
 
 # For the characters default:
 #
-#   * uppercase letters A-Z
-#   * lowercase letters a-z
+#   * letters A-Z and a-z
 #   * digits 0-9
-#   * many special characters
+#   * many special characters that appear on a typical U.S. keyboard
 #   * omit '/' '@' '"' ' ' because they are incompatible with PostgreSQL
 #
 PASSABLE_LENGTH_DEFAULT="24"
