@@ -13,8 +13,16 @@ program_variant="$program_command version $program_version updated $program_upda
 
 ## Environment variable settings
 
+# For the characters default:
+#
+#   * uppercase letters A-Z
+#   * lowercase letters a-z
+#   * digits 0-9
+#   * many special characters
+#   * omit '/' '@' '"' ' ' because they are incompatible with PostgreSQL
+#
 PASSABLE_LENGTH_DEFAULT="24"
-PASSABLE_CHARACTERS_DEFAULT="A-Za-z0-9~@#$%^&*(){}[]<>,./?;:-=_+"
+PASSABLE_CHARACTERS_DEFAULT="A-Za-z0-9~#$%^&*(){}[]<>,.?;:-=_+"
 PASSABLE_GPG_COMMAND_DEFAULT="gpg"
 PASSABLE_DECRYPT_UMASK_DEFAULT="0077"
 
