@@ -96,7 +96,7 @@ passable_encrypt(){
 }
 
 passable_decrypt(){
-    umask_save=`umask`
+    umask_save=$(umask)
     umask "${PASSABLE_DECRYPT_UMASK:-$PASSABLE_DECRYPT_UMASK_DEFAULT}"
     ${PASSABLE_GPG_COMMAND:-$PASSABLE_GPG_COMMAND_DEFAULT} \
         --decrypt \
