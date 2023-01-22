@@ -1,0 +1,16 @@
+#!/bin/sh
+set -eu
+. ../sixarm-unix-shell-functions
+
+test_default_length_is_visible_characters_and_newline() {
+    len=$(passable new |  grep '^[^[:space:]]*$' | wc | awk '{ print $3}')
+    assert_equal "$len" "25"
+}
+
+test_custom_length_is_visible_characters_and_newline() {
+    len=$(passable new 30 |  grep '^[^[:space:]]*$' | wc | awk '{ print $3}')
+    assert_equal "$len" "31"
+}
+
+test_default_length_is_visible_characters_and_newline
+test_custom_length_is_visible_characters_and_newline

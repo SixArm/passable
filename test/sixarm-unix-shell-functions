@@ -1,0 +1,1102 @@
+#!/bin/sh
+
+##
+# SixArm Unix shell functions
+#
+# SixArm is a consulting group that creates software and systens.
+#
+# [`sixarm-unix-shell-functions`](sixarm-unix-shell-functions) is 
+# our file of general-purpose Unix functions, with emphasis on 
+# small functions, clear examples, and POSIX compatibility.
+#
+# To download this file:
+#
+# ```sh
+# curl -O "https://raw.githubusercontent.com/SixArm/sixarm-unix-shell-functions/main/sixarm-unix-shell-functions"
+# ```
+#
+# ## Tracking
+#
+#   * Package: sixarm-unix-shell-functions
+#   * Version: 9.5.1
+#   * Created: 2017-08-22T00:00:00Z
+#   * Updated: 2022-12-07T18:43:04Z
+#   * License: GPL-2.0-or-later or contact us for custom license
+#   * Contact: Joel Parker Henderson (joel@sixarm.com)
+##
+
+##
+# Input/output helpers
+##
+
+# out: print output message to stdout.
+#
+# Example:
+# ```
+# out "my message"
+# => my message
+# ```
+#
+# We use `printf` instead of `echo` because `printf` is more consistent
+# on more systems, such a for escape sequence handling.
+#
+# Compare:
+#
+#   * Use the `out` function to print to STDOUT.
+#
+#   * Use the `err` function to print to STDERR.
+#
+out() {
+        printf %s\\n "$*"
+}
+
+# err: print error message to stderr.
+#
+# Example:
+# ```
+# err "my message"
+# STDERR=> my message
+# ````
+#
+# We use `printf` instead of `echo` because `printf` is more consistent
+# on more systems, such a for escape sequence handling.
+#
+# Compare:
+#
+#   * Use the `out` function to print to STDOUT.
+#
+#   * Use the `err` function to print to STDERR.
+#
+err() {
+        >&2 printf %s\\n "$*"
+}
+
+# die: print error message to stderr, then exit with error code.
+#
+# Example:
+# ```
+# die 1 "my message"
+# STDERR=> my message
+# => exit 1
+# ```
+die() {
+        n="$1" ; shift ; >&2 printf %s\\n "$*" ; exit "$n"
+}
+
+# big: print a big banner to stdout, good for human readability.
+#
+# Example:
+# ```
+# big "my message"
+# =>
+# ###
+# #
+# # my message
+# #
+# ###
+# ```
+big() {
+        printf \\n###\\n#\\n#\ %s\\n#\\n###\\n\\n "$*"
+}
+
+# log: print a datestamp, unique random id, hostname, process id, and message.
+#
+# Example:
+# ```
+# log "my message"
+# => 2021-05-04T22:57:54.000000000+00:00 7e7151dc24bd511098ebb248771d8ffb abc.example.com 1234 my message
+# ```
+#
+# We prefer this log file format for many of our scripts because we prefer
+# logging the additional diagnositc information that we use for our systems:
+# the datetime with nanosecond-friendly format and timezone-friendly format, 
+# unique random id a.k.a. zid, hostname, and process number.
+#
+log() {
+        printf '%s %s %s %s\n' "$( now )" "$( zid )" "$( hostname )" $$ "$*"
+}
+
+# zid: generate a 32-bit secure random lowercase hex identifier.
+#
+# Example:
+# ```
+# zid
+# => 78577554e967951388b5907854b4c337
+# ```
+zid() {
+        hexdump -n 16 -v -e '16/1 "%02x" "\n"' /dev/random
+}
+
+# ask: prompt the user for a line of input, then return a trimmed string.
+#
+# Example:
+# ```
+# ask
+# => prompt
+# ```
+ask() {
+        read x ; echo "$x" | sed 's/^[[:space:]]*//; s/[[:space:]]*$//'
+}
+
+##
+# Exit codes
+##
+
+# It is good practice to call exit with a value that indicates success (0) 
+# or a failure condition when ending a program. The pre-defined exit codes
+# from sysexits can be used, so the caller of the process can get a rough
+# estimation about the failure class without looking up the source code.
+#
+# The successful exit is always indicated by a status of 0. 
+#
+# Error numbers begin at EX__BASE to reduce the possibility of clashing with
+# other exit statuses that random programs may already return. The meaning of
+# the codes is approximately as follows.
+EX_OK=0
+
+# The command was used incorrectly, e.g., with the wrong number of arguments,
+# a bad flag, a bad syntax in a parameter, or whatever.
+EX_USAGE=64
+
+# The input data was incorrect in some way. This should only be used for user's
+# data and not system files.
+EX_DATAERR=65
+
+# An input file-- not a system file-- did not exist or was not readable.  This
+# could include errors like "No message" to a mailer-- if it cared to catch it.
+EX_NOINPUT=66
+
+# The user specified did not exist. This might be used for mail addresses or
+# remote logins.
+EX_NOUSER=67
+
+# The host specified did not exist. This is used in mail addresses or network
+# requests.
+EX_NOHOST=68
+
+# A service is unavailable. This can occur if a support program or file does not
+# exist. This can also be used as a catchall message when something you wanted
+# to do does not work, but you do not know why.
+EX_UNAVAILABLE=69
+
+# An internal software error has been detected. This should be limited to
+# non-operating system related errors as possible.
+EX_SOFTWARE=70
+
+# An operating system error has been detected. This is intended to be used for
+# such things as "cannot fork", "cannot create pipe", or the like.  It includes
+# things like getuid returning a user that does not exist in the passwd file.
+EX_OSERR=71
+
+# Some system file (e.g. /etc/passwd, /var/run/utx.active, etc.) does not exist,
+# cannot be opened, or has some sort of error (e.g. syntax error).
+EX_OSFILE=72
+
+# A user-specified output file cannot be created.
+EX_CANTCREAT=73
+
+# An error occurred while doing I/O on some file.
+EX_IOERR=74
+
+# Temporary failure, indicating something that is not really an error.  In
+# sendmail, this means that a mailer (e.g. could not create a connection) and
+# the request should be reattempted later.
+EX_TEMPFAIL=75
+
+# The remote system returned something that was "not possible" during a protocol
+# exchange.
+EX_PROTOCOL=76
+
+# You did not have sufficient permission to perform the operation.  This is not
+# intended for file system problems, which should use EX_NOINPUT or
+# EX_CANTCREAT, but rather for higher level permissions.
+EX_NOPERM=77
+
+# Something was found in an unconfigured or misconfigured state.
+EX_CONFIG=78
+
+# Git bisect: The special exit code 125 should be used when the current source
+# code cannot be tested. If the script exits with this code, the current
+# revision will be skipped (see git bisect skip above). 125 was chosen as the
+# highest sensible value to use for this purpose, because 126 and 127 are used
+# by POSIX shells to signal specific error status (127 is for command not found,
+# 126 is for command found but not executable—​these details do not matter, as
+# they are normal errors in the script, as far as bisect run is concerned).
+EX_GIT_BISECT_SKIP=125
+
+# GNU bash: If a command is found but is not executable, then return 126. 
+EX_COMMAND_FOUND_BUT_NOT_EXECUTABLE=126
+
+# GNU bash: If a command is not found, then return 127. 
+EX_COMMAND_NOT_FOUND=127
+
+##
+# Directory helpers
+##
+
+# pushdx: pushd with silencer.
+#
+# Example:
+# ```
+# pushdx temp
+# => change to directory "temp"
+# ```
+pushdx() {
+        command pushd "$@" > /dev/null
+}
+
+# popdx: popd with silencer.
+#
+# Example:
+# ```
+# popdx
+# => change to previous directory
+# ```
+popdx() {
+        command popd "$@" > /dev/null
+}
+
+# user_dir: get user-specific directory via env var or XDG setting or HOME.
+#
+# Example:
+# ```
+# user_dir foo => $FOO_DIR || $FOO_HOME || $XDG_FOO_DIR || $XDG_FOO_HOME || $HOME/foo
+# ```
+#
+# Conventions:
+#
+#   * `user_dir bin` => binary executable directory
+#   * `user_dir cache` => cache directory
+#   * `user_dir config` => configuration directory
+#   * `user_dir data` => data directory
+#   * `user_dir desktop` => desktop directory
+#   * `user_dir doscuments` => documents directory
+#   * `user_dir download` => download directory
+#   * `user_dir log` => logging directory
+#   * `user_dir music` => music directory
+#   * `user_dir pictures` => pictures directory
+#   * `user_dir publicshare` => public share directory
+#   * `user_dir runtime` => runtime directory
+#   * `user_dir state` => state directory
+#   * `user_dir temp` => temporary directory
+#   * `user_dir templates` => templates directory
+#   * `user_dir videos` => videos directory
+#
+# POSIX conventions:
+# ```
+# XDG_BIN_HOME: user-specific binaries, analogous to system /usr/bin or $HOME/.local/bin.
+# XDG_LOG_HOME: user-specific log files, analogous to system /var/log or $HOME/.local/log.
+# XDG_TEMP_HOME: user-specific temporary files, analogous to system /temp or $HOME/.temp.
+# XDG_DATA_HOME: user-specific data files, analogous to system /usr/share or $HOME/.local/share.
+# XDG_CACHE_HOME: user-specific cache files, analogous to system /var/cache or $HOME/.cache.
+# XDG_STATE_HOME: user-specific cache files, analogous to system /var/state or $HOME/.local/state.
+# XDG_CONFIG_HOME: user-specific configuration files, analogous to system /etc or $HOME/.config.
+# XDG_RUNTIME_HOME: user-specific runtime files such as sockets, named pipes, etc. or $HOME/.runtime.
+# ```
+#
+# User directory conventions:
+# ```
+# XDG_DESKTOP_DIR: user-specific desktop, such as frequent apps and files.
+# XDG_DOCUMENTS_DIR: user-specific documents, such as typical working files.
+# XDG_DOWNLOAD_DIR: user-specific downloads, such as internet file downloads.
+# XDG_MUSIC_DIR: user-specific music files, such as songs.
+# XDG_PICTURES_DIR: user-specific pictures, such as photos.
+# XDG_PUBLICSHARE_DIR: user-specific public share, such as file sharing.
+# XDG_TEMPLATES_DIR: user-specific templates.
+# XDG_VIDEOS_DIR: user-specific videos, such as movies.
+# ```
+#
+# See also:
+#
+#   * https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
+#
+#   * https://wiki.archlinux.org/title/XDG_user_directories
+#
+user_dir(){
+	upper=$(printf %s\\n "$1" | tr '[:lower:]' '[:upper:]')
+	lower=$(printf %s\\n "$1" | tr '[:upper:]' '[:lower:]')
+	a=$(eval printf "%s\\\\n" \$${upper}_DIR)
+	b=$(eval printf "%s\\\\n" \$${upper}_HOME)
+	c=$(eval printf "%s\\\\n" \$XDG_${upper}_DIR)
+	d=$(eval printf "%s\\\\n" \$XDG_${upper}_HOME)
+        printf %s\\n "${a:=${b:=${c:=${d:=$HOME/$lower}}}}"
+}
+
+##
+# Time helpers
+##
+
+# now: get a datetime using our preferred ISO standard format.
+#
+# Example with the current datetime:
+# ```
+# now
+# => 2021-05-04T22:59:28.000000000+00:00
+# ```
+#
+# Example with a custom datetime:
+# ```
+# now -d "2021-01-01" 
+# => 2021-01-01T00:00:00.000000000+00:00
+# ```
+#
+# We prefer this date-time format for many of our scripts:
+#
+#   * We prefer ISO standard because it's well documented and supported.
+#     Specifically, we use ISO "YYYY-MM-DDTHH:MM:SS.NNNNNNNNN+00:00".
+#
+#   * We prefer nanosecond width because it aligns with high-speed systems.
+#     Specifically, we use GNU `date` and tools that print nanoseconds.
+#
+#   * We prefer timezone width because it aligns with localized systems.
+#     Specifically, we use some systems and tools that require timezones.
+#
+# Note: the custom datetime capabilty relies on the system "date" command,
+# because this script sends the args along to the system "date" command.
+# For example Linux GNU "date" handles this, but macOS BSD "date" doesn't.
+#
+now() {
+        date -u "+%Y-%m-%dT%H:%M:%S.000000000+00:00" "$@"
+}
+
+# sec: get the current time in Unix seconds.
+#
+# Example:
+# ```
+# sec
+# => 1620169178
+# ```
+sec() {
+        date "+%s"
+}
+
+# age: get the age of a given time in Unix secords.
+#
+# Example:
+# ```
+# age 1620169178
+# => 19
+# ```
+age() {
+        printf %s\\n "$(( $(date "+%s") - $1 ))"
+}
+
+# newer: is the age of a given time newer than a given number of seconds?
+#
+# Example:
+# ```
+# newer 2000000000 && echo "true" || echo "false
+# => true
+# ```
+newer() {
+        [ "$(( $(date "+%s") - $1 ))" -lt "$2" ]
+}
+
+# older: is the age of a given time older than a given number of seconds?
+#
+# Example:
+# ```
+# older 1000000000 && echo "true" || echo "false"
+# => true
+# ```
+older() {
+        [ "$(( $(date "+%s") - $1 ))" -gt "$2" ]
+}
+
+##
+# Validation helpers
+##
+
+# cmd: return true iff a command exists.
+#
+# Example:
+# ```
+# cmd grep
+# => true
+#
+# cmd curl
+# => false
+# ```
+cmd() {
+        command -v "$1" >/dev/null 2>&1
+}
+
+# cmd_or_die: ensure a command exists.
+#
+# Example:
+# ```
+# cmd_or_die grep
+# => true
+#
+# cmd_or_die curl
+# STDERR=> Command needed: curl
+# => exit 1
+# ```
+cmd_or_die() {
+        cmd "$1" || die "$EX_UNAVAILABLE" "Command needed: $1"
+}
+
+# cmd_ver_or_die: ensure a command version exists.
+#
+# Example:
+# ```
+# cmd_ver_or_die grep 2.2 1.1
+# => true
+#
+# version_or_die grep 2.2 3.3
+# STDERR=> Command version needed: grep >= 3.x
+# => exit 1
+# ```
+cmd_ver_or_die() {
+        cmd "$1" && ver "$2" "$3" || die "$EX_UNAVAILABLE" "Command version needed: $1 >= $2 (not ${3:-?})"
+}
+
+# var: return true iff a variable exists.
+#
+# Example:
+# ```
+# var HOME
+# => true
+#
+# var FOO
+# => false
+# ```
+var() {
+        ! eval 'test -z ${'$1'+x}'
+}
+
+# var_or_die: ensure a variable exists.
+#
+# Example:
+# ```
+# var_or_die HOME
+# => true
+#
+# var_or_die FOO
+# STDERR=> Variable needed: FOO
+# => exit 1
+# ```
+var_or_die() {
+        var "$1" || die "$EX_CONFIG" "Variable needed: $1"
+}
+
+# ver: return true iff a version is sufficient.
+#
+# Example:
+# ```
+# ver 1.1 2.2
+# => true
+#
+# ver 3.3 2.2
+# => false
+# ```
+ver() {
+        [ "$(cmp_digits "$1" "$2")" -le 0 ]
+}
+
+# ver_or_die: ensure a version is sufficient.
+#
+# Example:
+# ```
+# ver_or_die 1.1 2.2
+# => true
+#
+# ver_or_die 3.3 2.2
+# STDERR=> Version needed: >= 3.3 (not 2.2)
+# ```
+ver_or_die() {
+        ver "$1" "$2" || die "$EX_CONFIG" "Version needed: >= $1 (not ${2:-?})"
+}
+
+##
+# Number helpers
+##
+
+# int: convert a number string to an integer number string.
+#
+# Example:
+# ```
+# int 1.23
+# => 1
+# ```
+int() {
+        printf %s\\n "$1" | awk '{ print int($0); exit }'
+}
+
+# sum: print the sum of numbers.
+#
+# Example:
+# ```
+# sum 1 2 3
+# => 6
+# ```
+sum() {
+        awk '{for(i=1; i<=NF; i++) sum+=$i; } END {print sum}'
+}
+
+##
+# Comparison helpers
+##
+
+# cmp_alnums: compare alnums as groups, such as for word version strings.
+#
+# Example:
+#
+# ```
+# cmp_alnums "a.b.c" "a.b.c"
+# => 0 (zero means left == right)
+#
+# cmp_alnums "a.b.c" "a.b.d"
+# => -1 (negative one means left < right)
+#
+# cmp_alnums "a.b.d" "a.b.c"
+# => 1 (positive one means left > right)
+# ```
+#
+cmp_alnums() {
+        if [[ "$1" == "$2" ]]; then
+                echo "0"; return 0
+        fi
+	a=$(printf %s\\n "$1" | sed 's/^[^[:alnum:]]*//')
+	b=$(printf %s\\n "$2" | sed 's/^[^[:alnum:]]*//')
+	while true; do
+		x=$(printf %s\\n "$a" | sed 's/[^[:alnum:]].*//')
+		y=$(printf %s\\n "$b" | sed 's/[^[:alnum:]].*//')
+		if [[ "$x" == "" && "$y" == "" ]]; then
+			echo "0"; return 0
+		fi
+		if [[ "$x" == "" || $x < $y ]]; then
+			echo "-1"; return 0
+		fi
+		if [[ "$y" == "" || $x > $y ]]; then
+			echo "1"; return 0
+		fi
+		a=$(printf %s\\n "$a" | sed 's/^[[:alnum:]]*[^[:alnum:]]*//')
+		b=$(printf %s\\n "$b" | sed 's/^[[:alnum:]]*[^[:alnum:]]*//')
+	done
+}
+
+# cmp_digits: compare digits as groups, such as for numeric version strings.
+#
+# Example:
+#
+# ```
+# cmp_digits 1.2.3 1.2.3
+# => 0 (zero means left == right)
+#
+# cmp_digits 1.2.3 1.2.4
+# => -1 (negative one means left < right)
+#
+# cmp_digits 1.2.4 1.2.3
+# => 1 (positive one means left > right)
+# ```
+#
+cmp_digits() {
+        if [[ "$1" == "$2" ]]; then
+                echo "0"; return 0
+        fi
+	a=$(printf %s\\n "$1" | sed 's/^[^[:digit:]]*//')
+	b=$(printf %s\\n "$2" | sed 's/^[^[:digit:]]*//')
+	while true; do
+		x=$(printf %s\\n "$a" | sed 's/[^[:digit:]].*//')
+		y=$(printf %s\\n "$b" | sed 's/[^[:digit:]].*//')
+		if [[ "$x" == "" && "$y" == "" ]]; then
+			echo "0"; return 0
+		fi
+		if [[ "$x" == "" || $x -lt $y ]]; then
+			echo "-1"; return 0
+		fi
+		if [[ "$y" == "" || $x -gt $y ]]; then
+			echo "1"; return 0
+		fi
+		a=$(printf %s\\n "$a" | sed 's/^[[:digit:]]*[^[:digit:]]*//')
+		b=$(printf %s\\n "$b" | sed 's/^[[:digit:]]*[^[:digit:]]*//')
+	done
+}
+
+##
+# Extensibility helpers
+##
+
+# dot_all: source all the executable files in a given directory and subdirectories.
+#
+# Example:
+# ```
+# dot_all ~/temp
+# => . ~/temp/a.sh
+# => . ~/temp/b.pl
+# => . ~/temp/c.js
+# ```
+dot_all() {
+        find "${1:-.}" -type f \( -perm -u=x -o -perm -g=x -o -perm -o=x \) -exec test -x {} \; -exec . {} \;
+}
+
+# run_all: run all the executable commands in a given directory and subdirectories.
+#
+# Example:
+# ```
+# run_all ~/temp
+# => ~/temp/a.sh
+# => ~/temp/b.pl
+# => ~/temp/c.js
+# ```
+run_all() {
+        find "${1:-.}" -type f \( -perm -u=x -o -perm -g=x -o -perm -o=x \) -exec test -x {} \; -exec {} \;
+}
+
+# sh_all: shell all the executable commands in a given directory and subdirectories.
+#
+# Example:
+# ```
+# sh_all ~/temp
+# => sh -c ~/temp/a.sh
+# => sh -c ~/temp/b.pl
+# => sh -c ~/temp/c.js
+# ```
+sh_all() {
+        find "${1:-.}" -type f \( -perm -u=x -o -perm -g=x -o -perm -o=x \) -exec test -x {} \; -print0 | xargs -0I{} -n1 sh -c "{}"
+}
+
+# rm_all: remove all files in a given directory and subdirectories-- use with caution.
+#
+# Example:
+# ```
+# rm_all ~/temp
+# => rm ~/temp/a.sh
+# => rm ~/temp/b.pl
+# => rm ~/temp/c.js
+# ```
+rm_all() {
+        find "${1:-.}" -type f -exec rm {} \;
+}
+
+##
+# Text helpers
+##
+
+# trim: remove any space characters at the text's start or finish.
+#
+# Example:
+# ```
+# trim "  foo  "
+# => foo
+#```
+trim() {
+        printf %s\\n "$*" | sed 's/^[[:space:]]*//; s/[[:space:]]*$//'
+}
+
+# slug: convert a string from any characters to solely lowercase and single internal dash characters.
+#
+# Example:
+# ```
+# slug "**Foo** **Goo** **Hoo**"
+# => foo-goo-hoo
+#```
+slug() {
+        printf %s\\n "$*" | sed 's/[^[:alnum:]]/-/g; s/--*/-/g; s/^-*//; s/-*$//;' | tr '[[:upper:]]' '[[:lower:]]'
+}
+
+# slugs: convert a string from any characters to solely lowercase and single internal dash characters and slash characters.
+#
+# Example:
+# ```
+# slugs "**Foo** / **Goo** / **Hoo**"
+# => foo/goo/hoo
+#```
+slugs(){
+        printf %s\\n "$*" | sed 's/[^[:alnum:]\/]/-/g; s/--*/-/g; s/^-*//; s/-*$//; s/-*\/-*/\//g' | tr '[[:upper:]]' '[[:lower:]]'
+}
+
+# upper_format: convert text from any lowercase letters to uppercase letters.
+#
+# Example:
+# ```
+# upper_format AbCdEf
+# => ABCDEF
+#```
+upper_format() {
+        printf %s\\n "$*" | tr '[[:lower:]]' '[[:upper:]]'
+}
+
+# lower_format: convert text from any uppercase letters to lowercase letters.
+#
+# Example:
+# ```
+# lower_format AbCdEf
+# => abcdef
+#```
+lower_format() {
+        printf %s\\n "$*" | tr '[[:upper:]]' '[[:lower:]]'
+}
+
+# chain_format: convert a string from any characters to solely alphanumeric and single internal dash characters.
+#
+# Example:
+# ```
+# chain_format "**Foo** **Goo** **Hoo**"
+# => Foo-Goo-Hoo
+#```
+chain_format() {
+        printf %s\\n "$*" | sed 's/[^[:alnum:]]\{1,\}/-/g; s/-\{2,\}/-/g; s/^-\{1,\}//; s/-\{1,\}$//;'
+}
+
+# snake_format: convert a string from any characters to solely alphanumeric and single internal underscore characters.
+#
+# Example:
+# ```
+# snake_format "**Foo** **Goo** **Hoo**"
+# => Foo_Goo_Hoo
+#```
+snake_format() {
+        printf %s\\n "$*" | sed 's/[^[:alnum:]]\{1,\}/_/g; s/_\{2,\}/_/g; s/^_\{1,\}//; s/_\{1,\}$//;'
+}
+
+# space_format: convert a string from any characters to solely alphanumeric and single internal space characters.
+#
+# Example:
+# ```
+# space_format "**Foo** **Goo** **Hoo**"
+# => Foo Goo Hoo
+#```
+space_format() {
+        printf %s\\n "$*" | sed 's/[^[:alnum:]]\{1,\}/ /g; s/ \{2,\}/ /g; s/^ \{1,\}//; s/ \{1,\}$//;'
+}
+
+# touch_format: convert a string from any characters to solely a command "touch -t" timestamp format.
+#
+# Example:
+# ```
+# touch_format "Foo  2021-05-04 22:57:54 Goo"
+# => 202105042257.54
+#```
+touch_format() {
+        printf %s\\n "$*" | sed 's/[^[:digit:]]//g; s/^\([[:digit:]]\{12\}\)\([[:digit:]]\{2\}\)/\1.\2/;'
+}
+
+# select_character_class: get a string's characters that match a class, with optional offset and length.
+#
+# Syntax: select_character_class <string> <class> [offset [length]]
+#
+# Example:
+# ```
+# select_character_class foo123goo456 alpha
+# => foogoo
+# ```
+#
+# Example with substring offset:
+# ```
+# select_character_class foo123goo456 alpha 3
+# => goo
+# ```
+#
+# Example with substring offset and length:
+# ```
+# select_character_class foo123goo456 alpha 3 1
+# => g
+# ```
+select_character_class() {
+	string=${1//[^[:$2:]]/}
+	offset=${3:-0}
+	length=${4:-${#string}}
+	printf %s\\n ${string:$offset:$length}
+}
+
+# reject_character_class: get a string's characters that don't match a class, with optional offset and length.
+#
+# Syntax: reject_character_class <string> <class> [offset [length]]
+#
+# Example:
+# ```
+# reject_character_class foo123goo456 alpha
+# => -123--456
+# ```
+#
+# Example with substring offset:
+# ```
+# reject_character_class foo123goo456 alpha 6
+# => 456
+# ```
+#
+# Example with substring offset and length:
+# ```
+# reject_character_class foo123goo456 alpha 6 1
+# => 4
+# ```
+reject_character_class() {
+	string=${1//[[:$2:]]/}
+	offset=${3:-0}
+	length=${4:-${#string}}
+	printf %s\\n ${string:$offset:$length}
+}
+
+##
+# Array helpers
+##
+
+# array_n: get the array number of fields a.k.a. length a.k.a. size.
+#
+# Example:
+# ```
+# set -- a b c d
+# array_n "$@"
+# => 4
+# ```
+array_n() {
+        printf %s "$#"
+}
+
+# array_i: get the array item at index `i` which is 1-based.
+#
+# Example:
+# ```
+# set -- a b c d
+# array_i "$@" 3
+# => c
+# ```
+#
+# POSIX syntax uses an array index that starts at 1.
+#
+# Bash syntax uses an array index that starts at 0.
+#
+# Bash syntax can have more power this way if you prefer it:
+#
+# ```
+# [ $# == 3 ] && awk -F "$2" "{print \$$3}" <<< "$1" || awk "{print \$$2}" <<< "$1"
+# ```
+array_i() {
+        for __array_i_i in "$@"; do true; done
+        if [ "$__array_i_i" -ge 1 -a "$__array_i_i" -lt $# ]; then
+                __array_i_j=1
+                for __array_i_x in "$@"; do 
+                        if [ "$__array_i_j" -eq "$__array_i_i" ]; then
+                                printf %s "$__array_i_x"
+                                return
+                        fi
+                        __array_i_j=$((__array_i_j+1))
+                done
+        fi
+        exit $EX_USAGE
+}
+
+# array_first: return the array's first item.
+#
+# Example:
+# ```
+# set -- a b c d
+# array_first "$@"
+# => a
+# ```
+array_first() {
+        printf %s "$1"
+}
+
+# array_last: return the array's last item.
+#
+# Example:
+# ```
+# set -- a b c d
+# array_last "$@"
+# => d
+# ```
+array_last() {
+        for __array_last_x in "$@"; do true; done
+        printf %s "$__array_last_x"
+}
+
+# array_car: return the array's car item a.k.a. first item.
+#
+# Example:
+# ```
+# set -- a b c d
+# array_car "$@"
+# => a
+# ```
+array_car() {
+        printf %s "$1"
+}
+
+# array_cdr: return the array's cdr items a.k.a. everything after the first item.
+#
+# Example:
+# ```
+# set -- a b c
+# array_cdr "$@"
+# => b c d
+# ```
+array_cdr() {
+        shift
+        printf %s "$*"
+}
+
+##
+# Assert helpers
+##
+
+# assert_test: assert a test utility command succeeds.
+#
+# Example:
+# ```
+# assert_test -x program.sh
+# => success i.e. no output
+#
+# assert_test -x notes.txt
+# STDERR=> assert_test -x notes.txt  (because failure prints diagnostic info)
+# ```
+assert_test() {
+        test "$1" "$2" || err assert_test "$@"
+}
+
+# assert_empty: assert an item is empty.
+#
+# Example:
+# ```
+# assert_empty ""
+# => success i.e. no output
+#
+# assert_empty foo
+# STDERR=> assert_empty foo (because failure prints diagnostic info)
+# ```
+assert_empty() {
+        [ -z "$1" ] || err assert_empty "$@"
+}
+
+# assert_empty: assert an item is equal to another item.
+#
+# Example:
+# ```
+# assert_equal foo foo
+# => success i.e. no output
+#
+# assert_equal foo bar
+# STDERR=> assert_equal foo bar (because failure prints diagnostic info)
+# ```
+assert_equal() {
+        [ "$1" = "$2" ] || err assert_equal "$@"
+}
+
+# assert_match: assert a regular expression matches an item.
+#
+# Example:
+# ```
+# assert_match o foo
+# => success i.e. no output
+#
+# assert_match x foo
+# STDERR=> assert_match x foo
+# ```
+assert_match() {
+        [[ "$2" =~ $1 ]] || err assert_match "$@"
+}
+
+##
+# Make temp helpers
+##
+
+# mktemp_dir: make a temporary directory path.
+#
+# Example:
+# ```
+# mktemp_dir
+# => /var/folders/4f7b65122b0fb65b0fdad568a65dc97d
+# ```
+mktemp_dir() {
+        x=$(mktemp -d -t "${1:-$(zid)}") ; trap '{ rm -rf "$x"; }' EXIT ; out "$x"
+}
+
+# mktemp_file: make a temporary file path.
+#
+# Example:
+# ```
+# mktemp_file
+# => /var/folders/4f7b65122b0fb65b0fdad568a65dc97d/1d9aafac5373be95d8b4c2dece0b1197
+# ```
+mktemp_file() {
+        x=$(mktemp -t "${1:-$(zid)}") ; trap '{ rm -f "$x"; }' EXIT ; out "$x"
+}
+
+##
+# Media helpers
+##
+
+# file_media_type: get a file's media type a.k.a. mime type such as "text/plain".
+#
+# Example:
+# ```
+# file_media_type notes.txt
+# => text/plain
+# ```
+file_media_type() {
+        file --brief --mime "$1"
+}
+
+# file_media_type_supertype: get a file's media type type a.k.a. mime type such as "text".
+#
+# Example:
+# ```
+# file_media_type_supertype notes.txt
+# => text
+# ```
+file_media_type_supertype() {
+        file --brief --mime "$1" | sed 's#/.*##'
+}
+
+# file_media_type_subtype: get a file's media type subtype a.k.a. mime type such as "plain".
+#
+# Example:
+# ```
+# file_media_type_subtype notes.txt
+# => plain
+# ```
+file_media_type_subtype() {
+        file --brief --mime "$1" | sed 's#^[^/]*/##; s#;.*##'
+}
+
+##
+# Font helpers
+##
+
+# font_exists: does a font name exist on this system?
+# 
+# Example:
+# ```
+# font_exists Arial
+# => true
+#
+# font_exists Foo
+# => false
+# ```
+#
+font_exists() {
+        fc-list | grep -q ": $1:"
+}
+
+# font_exists_or_die: ensure a font name exists.
+# 
+# Example:
+# ```
+# font_exists_or_die Arial
+# => true
+#
+# font_exists_or_die Foo
+# STDERR=> Font needed: Foo
+# => exit 1
+# ```
+#
+font_exists_or_die() {
+        font_exists "$1" || die "$EX_UNAVAILABLE" "Font needed: $1" 
+}
+
+##
+# Content helpers
+##
+
+# File ends with newline?
+#
+# Example:
+# ```
+# file_ends_with_newline notes.txt
+# => true
+# ```
+file_ends_with_newline() {
+        test $(tail -c1 "$1" | wc -l) -gt 0
+}

@@ -1,0 +1,12 @@
+#!/bin/sh
+set -eu
+. ../sixarm-unix-shell-functions
+
+test_encrypt() {
+    echo "When this prompts you for a password, then enter: secret"
+    passable encrypt example.txt
+    x=$(passable decrypt example.txt.gpg)
+    assert_equal "$x" "Hello World"
+}
+
+test_encrypt
