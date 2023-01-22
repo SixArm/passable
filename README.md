@@ -143,9 +143,9 @@ These commands are similar:
   * Command: passable
   * Website: https://sixarm.com/passable
   * Cloning: https://github.com/sixarm/passable
-  * Version: 5.0.0
+  * Version: 5.1.0
   * Created: 2010-05-20
-  * Updated: 2020-05-20
+  * Updated: 2023-01-22
   * License: GPL
   * Contact: Joel Parker Henderson (joel@joelparkerhenderson.com)
   * Tracker: b48657369aada8deaffb880ae3486081

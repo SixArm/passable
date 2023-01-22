@@ -4,9 +4,9 @@ set -eu
 ## Program Tracking ##
 
 program_command="passable"
-program_version="5.0.0"
+program_version="5.1.0"
 program_created="2010-05-20"
-program_updated="2020-05-20"
+program_updated="2023-01-22"
 program_license="GPL"
 program_contact="Joel Parker Henderson (joel@joelparkerhenderson.com)"
 program_variant="$program_command version $program_version updated $program_updated"
@@ -29,6 +29,7 @@ PASSABLE_DECRYPT_UMASK_DEFAULT="0077"
 
 help(){
 cat <<EOF
+Summary: $program_variant
 Command: $program_command
 Version: $program_version
 Created: $program_created
