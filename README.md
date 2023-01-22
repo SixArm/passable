@@ -1,6 +1,6 @@
-# passable: password store command that's just good enough
+# passable: password command that's just good enough
 
-This is `passable`, a simple password store tool, also known as a password manager, a secret keeper, or a file valut.
+This is `passable`, a simple password command line interface tool.
 
 
 ## Introdution
