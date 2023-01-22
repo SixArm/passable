@@ -38,6 +38,12 @@ Example on typical macOS and Linux:
 sudo curl -sSL "https://raw.githubusercontent.com/SixArm/passable/master/passable" -o /usr/local/bin/passable && sudo chmod +x $_
 ```
 
+If you want to verify the download, then the SHA512 is:
+
+```
+7bb9049827c09123162c15c84a5af642b99da4460dba82da577829797d2abdae2d5f971f016f6af156c9b4a08fca0b34d6c945510a3a19426e4149789f9748b7
+```
+
 
 ## Examples
 
