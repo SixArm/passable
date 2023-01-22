@@ -76,7 +76,7 @@ fi
 passable_new(){
     length=${1:-${PASSABLE_LENGTH:-$PASSABLE_LENGTH_DEFAULT}}
     characters=${2:-${PASSABLE_CHARACTERS:-$PASSABLE_CHARACTERS_DEFAULT}}
-    printf %s\\n $(LC_ALL=C < /dev/urandom tr -dc "$characters" | head -c"$length")
+    printf %s\\n "$(LC_ALL=C < /dev/urandom tr -dc "$characters" | head -c"$length")"
 }
 
 passable_encrypt(){
