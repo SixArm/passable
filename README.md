@@ -117,6 +117,26 @@ echo 'S&dw6[ysN@O9W5{5>^&RZ9pF' | pbclip
 
 See the repository directory `test` for some example unit tests.
 
+The test files need to prompt you for a password; you can use any password you want.
+
+If a test succeeds, then it will be silent.
+
+If a test fails, then it will print an "assert" error message.
+
+To run all the test files:
+
+```sh
+cd test
+./test
+```
+
+To run one test file, for example to test the command `passable new`:
+
+```sh
+cd test/new
+./test
+```
+
 
 ## TODO
 
