@@ -1,0 +1,8 @@
+#!/bin/sh
+set -eu
+. sixarm-unix-shell-functions
+
+pwd=$(pwd)
+cd "$pwd/new" && ./test
+cd "$pwd/decrypt" && ./test 
+cd "$pwd/encrypt" && ./test

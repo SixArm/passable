@@ -2,9 +2,10 @@
 set -eu
 . ../sixarm-unix-shell-functions
 
-test_encrypt() {
+test_decrypt() {
+    passable encrypt example.txt
     x=$(passable decrypt example.txt.gpg)
     assert_equal "$x" "Hello World"
 }
 
-test_encrypt
+test_decrypt
