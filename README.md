@@ -146,6 +146,6 @@ These commands are similar:
   * Version: 5.1.0
   * Created: 2010-05-20
   * Updated: 2023-01-22
-  * License: GPL
+  * License: MIT or Apache-2.0 or GPL-2.0-or-later or contact us for custom
   * Contact: Joel Parker Henderson (joel@joelparkerhenderson.com)
   * Tracker: b48657369aada8deaffb880ae3486081
