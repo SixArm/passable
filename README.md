@@ -35,7 +35,7 @@ Download the program `passable` anywhere you want, and make it runnable.
 Example on typical macOS and Linux:
 
 ```sh
-sudo curl -sSL "https://raw.githubusercontent.com/SixArm/passable/master/passable" -o /usr/local/bin/passable && chmod +x $_
+sudo curl -sSL "https://raw.githubusercontent.com/SixArm/passable/master/passable" -o /usr/local/bin/passable && sudo chmod +x $_
 ```
 
 
