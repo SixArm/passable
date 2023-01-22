@@ -1,6 +1,6 @@
-# passable: password command that's just good enough
+# passable: password command that's secure and simple
 
-This is `passable`, a simple password command line interface tool.
+This is `passable`, a password command line interface tool that is secure cryptogrpahically and simple to use.
 
 
 ## Introdution
@@ -8,7 +8,7 @@ This is `passable`, a simple password command line interface tool.
 
 ### Purpose
 
-The purpose of this tool is to be just good enough to do three things:
+The purpose of this tool is to do three simple things:
 
 * Create a new password.
 
@@ -120,7 +120,7 @@ See the repository directory `test` for some example unit tests.
 
 ## TODO
 
-We welcome help with these:
+We welcome help with these todo areas:
 
 - [ ] Improve unit tests.
 
