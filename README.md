@@ -113,6 +113,24 @@ echo 'S&dw6[ysN@O9W5{5>^&RZ9pF' | pbclip
 ```
 
 
+## Test
+
+See the repository directory `test` for some example unit tests.
+
+
+## TODO
+
+We welcome help with these:
+
+- [ ] Improve unit tests.
+
+- [ ] Add installation via package managers e.g. apt, brew, yum.
+
+- [ ] Add CI/CD build process.
+
+- [ ] Add GitHub release tags.
+
+
 ## Documentation
 
 * [More examples](doc/more_examples.md)
