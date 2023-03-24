@@ -4,10 +4,10 @@ set -eu
 ## Program Tracking ##
 
 program_command="passable"
-program_version="5.1.0"
-program_created="2010-05-20"
-program_updated="2023-01-22"
-program_license="GPL"
+program_version="5.2.0"
+program_created="2010-05-20T20:08:00"
+program_updated="2023-03-24T14:01:41Z"
+program_license="MIT or Apache-2.0 or GPL-2.0 or GPL-3.0 or contact us for more"
 program_contact="Joel Parker Henderson (joel@joelparkerhenderson.com)"
 program_variant="$program_command version $program_version updated $program_updated"
 
@@ -57,7 +57,7 @@ Encrypt a file:
 
     passable encrypt file.txt
 
-Output is a new encrypted file `file.txt.gpg`.
+Output is a new encrypted file "file.txt.gpg".
 
 Decrypt a file:
 

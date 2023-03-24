@@ -1,6 +1,6 @@
 #!/bin/sh
 set -eu
-. ../sixarm-unix-shell-functions
+. ../posix-shell-script-kit
 
 test_decrypt() {
     passable encrypt example.txt
